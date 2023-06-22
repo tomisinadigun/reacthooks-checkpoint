@@ -6,6 +6,9 @@ import Container from 'react-bootstrap/Container';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import Form from 'react-bootstrap/Form';
+import axios from "axios";
+import { Link } from "react-router-dom";
+import PageHeader from "./PageHeader";
 
 
 const API_URL = "http://www.omdbapi.com/?i=tt3896198&apikey=5881ce94"
@@ -15,11 +18,18 @@ const MovieList = () => {
 
     const [movies, setMovies] = useState([]);
     const [search, setSearch] = useState("superman");
+    const [loading, setLoading] = useState(false)
 
     const fetchData = async (title) => {
-        const response = await fetch(`${API_URL}&s=${title}`);
-        const data = await response.json();
-        setMovies(data.Search)
+        try {
+            // setLoading(true)
+            const response = await axios.get(`${API_URL}&s=${title}`);
+            setMovies(response?.data.Search)
+            // setLoading(false)
+        } catch (error) {
+
+        }
+        
     }
 
     useEffect(() => {
@@ -33,6 +43,7 @@ const MovieList = () => {
 
     return(
         <>
+            <PageHeader/>
             <section className="search-movies">
                 <input type="text" value={search} onChange={handleSearch} placeholder="search movies here..." />
             </section>
@@ -42,9 +53,13 @@ const MovieList = () => {
                     {
                         movies?.map((item, index) => {
                             return(
+                                
                                 <Col key={index}>
-                                    <MovieCard  poster={item.Poster} movieTitle={item.Title} key={index}  />
+                                    <Link to={`/movie-detail/${item.imdbID}`}>
+                                        <MovieCard  poster={item.Poster} movieTitle={item.Title} movieId={item.imdbID} key={item.imdbID}  />
+                                    </Link>
                                 </Col>
+                                
                             )
                         })
                     }

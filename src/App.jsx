@@ -1,18 +1,22 @@
 import './App.css'
 import MovieList from './components/MovieList';
-import MovieCard from './components/MovieCard';
-
-
+import { Route, Routes, useParams } from 'react-router-dom';
+import MovieDetail from './components/MovieDetails';
+import { useState } from 'react';
+import axios from 'axios';
+import { useSearchParams } from 'react-router-dom';
 
 function App() {
-
+  let {movieId} = useParams()
+  
   return (
     <>
-      <header className='header-section'>
-        <h1>Movies</h1>
-      </header>
+
+      <Routes>
+        <Route path='/' element = {<MovieList />} />
+        <Route path={`/movie-detail/:${movieId}`} element = {<MovieDetail thisMovie={movieId} />} />
+      </Routes>
       
-      <MovieList />
     </>
   )
 }
